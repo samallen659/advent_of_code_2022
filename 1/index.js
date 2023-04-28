@@ -18,7 +18,8 @@ class Elf {
 class ElfContainer {
   constructor() {
     this.elfList = [];
-    this.highestCalorieTotal = 0;
+    this.topThreeTotal = 0;
+    this.topThreeElfCalories = { 1: 0, 2: 0, 3: 0 };
   }
 
   addElf(elf) {
@@ -31,10 +32,22 @@ class ElfContainer {
   }
   calculateHighestCalorieTotal() {
     for (let i = 0; i < this.elfList.length; i++) {
-      if (this.highestCalorieTotal < this.elfList[i].calorieTotal) {
-        this.highestCalorieTotal = this.elfList[i].calorieTotal;
+      const currentCalorieTotal = this.elfList[i].calorieTotal;
+      if (this.topThreeElfCalories["1"] < currentCalorieTotal) {
+        this.topThreeElfCalories["3"] = this.topThreeElfCalories["2"];
+        this.topThreeElfCalories["2"] = this.topThreeElfCalories["1"];
+        this.topThreeElfCalories["1"] = currentCalorieTotal;
+      } else if (this.topThreeElfCalories["2"] < currentCalorieTotal) {
+        this.topThreeElfCalories["3"] = this.topThreeElfCalories["2"];
+        this.topThreeElfCalories["2"] = currentCalorieTotal;
+      } else if (this.topThreeElfCalories["3"] < currentCalorieTotal) {
+        this.topThreeElfCalories["3"] = currentCalorieTotal;
       }
     }
+    this.topThreeTotal =
+      this.topThreeElfCalories["1"] +
+      this.topThreeElfCalories["2"] +
+      this.topThreeElfCalories["3"];
   }
 }
 
@@ -57,7 +70,8 @@ function splitElfList(data) {
   });
   elfContainer.calculateElvesTotalCalories();
   elfContainer.calculateHighestCalorieTotal();
-  console.log(elfContainer.highestCalorieTotal);
+  console.log(elfContainer.topThreeElfCalories);
+  console.log(elfContainer.topThreeTotal);
 }
 function splitFoodList(data) {
   return data.split("\n");
