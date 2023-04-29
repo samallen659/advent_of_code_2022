@@ -11,20 +11,34 @@ async function getFileContents(filePath: string): Promise<string | undefined> {
 }
 
 getFileContents("./input.txt").then((data) => {
-  let finalScore = 0;
   if (typeof data !== "undefined") {
-    data
-      .split("\n")
-      .filter(Boolean)
-      .map((moves) => {
-        const [elfMoveChar, playerMoveChar] = moves.split(" ");
-        const elfMove = characterToShape(elfMoveChar);
-        const playerMove = characterToShape(playerMoveChar);
-        finalScore += calculateScore(elfMove, playerMove);
-      });
-    console.log(finalScore);
+    const moveList = data.split("\n").filter(Boolean);
+    partOne(moveList);
+    partTwo(moveList);
   }
 });
+
+function partOne(moveList: Array<string>) {
+  let finalScore = 0;
+  moveList.map((moves) => {
+    const [elfMoveChar, playerMoveChar] = moves.split(" ");
+    const elfMove = characterToShape(elfMoveChar);
+    const playerMove = characterToShape(playerMoveChar);
+    finalScore += calculateScore(elfMove, playerMove);
+  });
+  console.log(finalScore);
+}
+
+function partTwo(moveList: Array<string>) {
+  let finalScore = 0;
+  moveList.map((moves) => {
+    const [elfMoveChar, roundResult] = moves.split(" ");
+    const elfMove = characterToShape(elfMoveChar);
+    const playerMove = calculatePlayerMove(elfMove, roundResult);
+    finalScore += calculateScore(elfMove, playerMove);
+  });
+  console.log(finalScore);
+}
 
 function characterToShape(character: string): string {
   let shape;
@@ -51,6 +65,41 @@ function characterToShape(character: string): string {
       throw Error(`${character} not an accepted option`);
   }
   return shape;
+}
+
+function calculatePlayerMove(elfMove: string, roundResult: string): string {
+  let playerMove;
+  if (roundResult === "Y") return elfMove;
+  else if (roundResult === "X") {
+    switch (elfMove) {
+      case "Rock":
+        playerMove = "Scissors";
+        break;
+      case "Paper":
+        playerMove = "Rock";
+        break;
+      case "Scissors":
+        playerMove = "Paper";
+        break;
+      default:
+        throw Error(`${elfMove} is an invalid elfMove`);
+    }
+  } else {
+    switch (elfMove) {
+      case "Rock":
+        playerMove = "Paper";
+        break;
+      case "Paper":
+        playerMove = "Scissors";
+        break;
+      case "Scissors":
+        playerMove = "Rock";
+        break;
+      default:
+        throw Error(`${elfMove} is an invalid elfMove`);
+    }
+  }
+  return playerMove;
 }
 
 function shapeToPoints(shape: string): number {
