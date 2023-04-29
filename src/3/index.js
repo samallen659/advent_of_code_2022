@@ -34,3 +34,27 @@ input.map((data) => {
     prioritySum += valueOfItem(commonItem);
 });
 console.log(prioritySum);
+function findRucksackCommonItem(setArr) {
+    const sortedSetArr = setArr.sort((a, b) => b.size - a.size);
+    const largestSetIter = sortedSetArr[0][Symbol.iterator]();
+    let commonItem = "";
+    for (let i = 0; i < sortedSetArr[0].size; i++) {
+        const largestSetValue = largestSetIter.next().value;
+        if (sortedSetArr[1].has(largestSetValue) &&
+            sortedSetArr[2].has(largestSetValue)) {
+            commonItem = largestSetValue;
+            break;
+        }
+    }
+    return commonItem;
+}
+prioritySum = 0;
+for (let i = 0; i < input.length; i += 3) {
+    const rucksackOneSet = new Set(input[i].split(""));
+    const rucksackTwoSet = new Set(input[i + 1].split(""));
+    const rucksackThreeSet = new Set(input[i + 2].split(""));
+    const rucksackSetList = [rucksackOneSet, rucksackTwoSet, rucksackThreeSet];
+    const commonItem = findRucksackCommonItem(rucksackSetList);
+    prioritySum += valueOfItem(commonItem);
+}
+console.log(prioritySum);
