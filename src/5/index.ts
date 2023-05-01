@@ -69,8 +69,42 @@ function partOne(input: string): void {
             const [moveAmount, moveFrom, moveTo] = getMoveData(move);
             processMove(stackArray, Number(moveAmount), Number(moveFrom), Number(moveTo));
         });
-    console.log(stackArray);
+    console.log(getStringFromTopItemInStacks(stackArray));
+}
+
+function processMoveTwo(
+    stackArray: Array<any>,
+    moveAmount: number,
+    moveFrom: number,
+    moveTo: number
+): void {
+    const movedItems = [];
+    for (let i = 0; i < moveAmount; i++) {
+        movedItems.push(stackArray[moveFrom - 1].pop());
+    }
+    for (let j = movedItems.length - 1; j > -1; j--) {
+        stackArray[moveTo - 1].push(movedItems.pop());
+    }
+}
+
+function partTwo(input: string): void {
+    const [stackData, moveData] = input.split("\n\n");
+    const stackArray = stackFactory(stackData);
+    moveData
+        .split("\n")
+        .filter(Boolean)
+        .map((move) => {
+            const [moveAmount, moveFrom, moveTo] = getMoveData(move);
+            processMoveTwo(
+                stackArray,
+                Number(moveAmount),
+                Number(moveFrom),
+                Number(moveTo)
+            );
+        });
+
     console.log(getStringFromTopItemInStacks(stackArray));
 }
 
 partOne(input);
+partTwo(input);
