@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const helpers_1 = require("../helpers");
+const elfFileSystem_1 = require("./elfFileSystem");
+const input = (0, helpers_1.getFileContents)("./input2.txt");
+const elfFile = new elfFileSystem_1.ElfFile("a.txt", 1000);
+const elfDirectory1 = new elfFileSystem_1.ElfDirectory("dir1", [elfFile]);
+const elfDirectory2 = new elfFileSystem_1.ElfDirectory("dir2", [elfDirectory1]);
+// console.log(elfDirectory2);
+console.log(elfFileSystem_1.ElfDirectory.getSize(elfDirectory2));
