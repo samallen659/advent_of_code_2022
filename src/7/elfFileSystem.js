@@ -5,13 +5,25 @@ class ElfFile {
     constructor(name, size) {
         this.name = name;
         this.size = size;
+        this.name = name;
+        this.size = size;
     }
 }
 exports.ElfFile = ElfFile;
 class ElfDirectory {
-    constructor(name, children) {
+    constructor(name, children, parent) {
         this.name = name;
         this.children = children;
+        this.parent = parent;
+        this.name = name;
+        this.children = children;
+        this.parent = parent;
+    }
+    getChildDirectory(name) {
+        const child = this.children.filter((child) => child.name === name);
+        if (child.length !== 0)
+            return child[0];
+        return undefined;
     }
     static getSize(elfDirectory) {
         let total = 0;

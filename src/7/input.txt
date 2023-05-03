@@ -1,7 +1,7 @@
 $ cd /
 $ ls
 dir bqc
-dir mwmlf
+dir mwmlf7inp
 dir ngn
 143562 nrwjb
 78449 qqvdcclf

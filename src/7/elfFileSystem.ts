@@ -1,14 +1,9 @@
-export type ElfDirectoryNode = ElfFile | ElfDirectory;
-
 interface IElfFile {
     name: string;
     size: number;
 }
 export class ElfFile implements IElfFile {
-    public name;
-    public size;
-
-    constructor(name: string, size: number) {
+    constructor(public name: string, public size: number) {
         this.name = name;
         this.size = size;
     }
@@ -16,18 +11,27 @@ export class ElfFile implements IElfFile {
 
 interface IElfDirectory {
     name: string;
-    children: ElfDirectoryNode[];
+    children: Array<ElfFile | ElfDirectory>;
+    parent?: ElfDirectory;
+    getChildDirectory(name: string): ElfDirectory | undefined;
 }
 
 export class ElfDirectory implements IElfDirectory {
-    public name;
-    public children;
-
-    constructor(name: string, children: Array<ElfDirectoryNode>) {
+    constructor(
+        public name: string,
+        public children: Array<ElfFile | ElfDirectory>,
+        public parent?: ElfDirectory
+    ) {
         this.name = name;
         this.children = children;
+        this.parent = parent;
     }
 
+    public getChildDirectory(name: string): ElfDirectory | undefined {
+        const child = this.children.filter((child) => child.name === name);
+        if (child.length !== 0) return child[0] as ElfDirectory;
+        return undefined;
+    }
     public static getSize(elfDirectory: ElfDirectory): number {
         let total = 0;
         for (let i = 0; i < elfDirectory.children.length; i++) {

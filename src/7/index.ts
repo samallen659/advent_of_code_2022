@@ -1,11 +1,71 @@
 import { getFileContents } from "../helpers";
-import { ElfFile, ElfDirectory, ElfDirectoryNode } from "./elfFileSystem";
+import { ElfFile, ElfDirectory } from "./elfFileSystem";
 
 const input = getFileContents("./input2.txt");
 
-const elfFile = new ElfFile("a.txt", 1000);
-const elfDirectory1 = new ElfDirectory("dir1", [elfFile]);
-const elfDirectory2 = new ElfDirectory("dir2", [elfDirectory1]);
+function isCommand(command: string): boolean {
+    return command[0] === "$";
+}
 
-// console.log(elfDirectory2);
-console.log(ElfDirectory.getSize(elfDirectory2));
+function isCommandCd(command: string): boolean {
+    return `${command[2]}${command[3]}` === "cd";
+}
+
+function isCommandLs(command: string): boolean {
+    return `${command[2]}${command[3]}` === "ls";
+}
+
+function getDirectoryName(command: string): string {
+    if (isCommand(command)) return command.slice(5, command.length);
+    return command.slice(4, command.length);
+}
+
+function isDirectory(command: string): boolean {
+    return `${command[0]}${command[1]}${command[2]}` === "dir";
+}
+
+function getFileDetails(command: string): Array<string> {
+    const [size, name] = command.split(" ");
+    return [size, name];
+}
+
+function parseCommands(commands: Array<string>, rootDirectory: ElfDirectory): void {
+    let currentDirectory = rootDirectory;
+    for (let i = 0; i < commands.length; i++) {
+        if (isCommand(commands[i])) {
+            if (isCommandLs(commands[i])) continue;
+            if (isCommandCd(commands[i])) {
+                const directoryName = getDirectoryName(commands[i]);
+                if (directoryName === ".." && currentDirectory.parent !== undefined) {
+                    currentDirectory = currentDirectory.parent;
+                } else {
+                    const childDirectory = currentDirectory.getChildDirectory(
+                        getDirectoryName(commands[i])
+                    );
+                    if (childDirectory !== undefined) {
+                        currentDirectory = childDirectory;
+                    }
+                }
+            }
+        } else {
+            if (isDirectory(commands[i])) {
+                const name = getDirectoryName(commands[i]);
+                const newDirectory = new ElfDirectory(name, []);
+                newDirectory.parent = currentDirectory;
+                currentDirectory.children.push(newDirectory);
+            } else {
+                const [size, name] = getFileDetails(commands[i]);
+                currentDirectory.children.push(new ElfFile(name, Number(size)));
+            }
+        }
+    }
+}
+
+function partOne(input: string): void {
+    const commands = input.split("\n").filter(Boolean);
+    const rootDirectory = new ElfDirectory("/", []);
+    parseCommands(commands, rootDirectory);
+    console.log(rootDirectory);
+}
+
+partOne(input);
