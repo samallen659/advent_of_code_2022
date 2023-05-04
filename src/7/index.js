@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const helpers_1 = require("../helpers");
 const elfFileSystem_1 = require("./elfFileSystem");
-const input = (0, helpers_1.getFileContents)("./input2.txt");
+const input = (0, helpers_1.getFileContents)("./input.txt");
 function isCommand(command) {
     return command[0] === "$";
 }
@@ -24,6 +24,32 @@ function getFileDetails(command) {
     const [size, name] = command.split(" ");
     return [size, name];
 }
+function handleCd(currentDirectory, command) {
+    let returnDirectory = currentDirectory;
+    const directoryName = getDirectoryName(command);
+    if (directoryName === ".." && returnDirectory.parent !== undefined) {
+        returnDirectory = returnDirectory.parent;
+    }
+    else {
+        const childDirectory = returnDirectory.getChildDirectory(getDirectoryName(command));
+        if (childDirectory !== undefined) {
+            returnDirectory = childDirectory;
+        }
+    }
+    return returnDirectory;
+}
+function handleNewFileOrDirectory(command, currentDirectory) {
+    if (isDirectory(command)) {
+        const name = getDirectoryName(command);
+        const newDirectory = new elfFileSystem_1.ElfDirectory(name, []);
+        newDirectory.parent = currentDirectory;
+        currentDirectory.children.push(newDirectory);
+    }
+    else {
+        const [size, name] = getFileDetails(command);
+        currentDirectory.children.push(new elfFileSystem_1.ElfFile(name, Number(size)));
+    }
+}
 function parseCommands(commands, rootDirectory) {
     let currentDirectory = rootDirectory;
     for (let i = 0; i < commands.length; i++) {
@@ -31,29 +57,11 @@ function parseCommands(commands, rootDirectory) {
             if (isCommandLs(commands[i]))
                 continue;
             if (isCommandCd(commands[i])) {
-                const directoryName = getDirectoryName(commands[i]);
-                if (directoryName === ".." && currentDirectory.parent !== undefined) {
-                    currentDirectory = currentDirectory.parent;
-                }
-                else {
-                    const childDirectory = currentDirectory.getChildDirectory(getDirectoryName(commands[i]));
-                    if (childDirectory !== undefined) {
-                        currentDirectory = childDirectory;
-                    }
-                }
+                currentDirectory = handleCd(currentDirectory, commands[i]);
             }
         }
         else {
-            if (isDirectory(commands[i])) {
-                const name = getDirectoryName(commands[i]);
-                const newDirectory = new elfFileSystem_1.ElfDirectory(name, []);
-                newDirectory.parent = currentDirectory;
-                currentDirectory.children.push(newDirectory);
-            }
-            else {
-                const [size, name] = getFileDetails(commands[i]);
-                currentDirectory.children.push(new elfFileSystem_1.ElfFile(name, Number(size)));
-            }
+            handleNewFileOrDirectory(commands[i], currentDirectory);
         }
     }
 }
@@ -61,6 +69,6 @@ function partOne(input) {
     const commands = input.split("\n").filter(Boolean);
     const rootDirectory = new elfFileSystem_1.ElfDirectory("/", []);
     parseCommands(commands, rootDirectory);
-    console.log(rootDirectory);
+    console.log(elfFileSystem_1.ElfDirectory.returnSizesUnder100000(rootDirectory));
 }
 partOne(input);

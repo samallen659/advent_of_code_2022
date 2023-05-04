@@ -39,5 +39,18 @@ class ElfDirectory {
         }
         return total;
     }
+    static returnSizesUnder100000(elfDirectory) {
+        let total = 0;
+        for (let i = 0; i < elfDirectory.children.length; i++) {
+            if (elfDirectory.children[i] instanceof ElfFile)
+                continue;
+            const directory = elfDirectory.children[i];
+            const directorySize = ElfDirectory.getSize(directory);
+            if (directorySize < 100000)
+                total += directorySize;
+            total += ElfDirectory.returnSizesUnder100000(directory);
+        }
+        return total;
+    }
 }
 exports.ElfDirectory = ElfDirectory;
