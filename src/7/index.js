@@ -71,4 +71,16 @@ function partOne(input) {
     parseCommands(commands, rootDirectory);
     console.log(elfFileSystem_1.ElfDirectory.returnSizesUnder100000(rootDirectory));
 }
+function calculateSpaceToDelete(diskCapacity, updateSize, rootDirectorySize) {
+    return updateSize - (diskCapacity - rootDirectorySize);
+}
+function partTwo(input) {
+    const commands = input.split("\n").filter(Boolean);
+    const rootDirectory = new elfFileSystem_1.ElfDirectory("/", []);
+    parseCommands(commands, rootDirectory);
+    const spaceToDelete = calculateSpaceToDelete(70000000, 30000000, elfFileSystem_1.ElfDirectory.getSize(rootDirectory));
+    const directorySizes = elfFileSystem_1.ElfDirectory.directorySizesOverThreshold(rootDirectory, spaceToDelete);
+    console.log(directorySizes.sort((a, b) => a - b)[0]);
+}
 partOne(input);
+partTwo(input);

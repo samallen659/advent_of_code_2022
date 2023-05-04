@@ -56,4 +56,21 @@ export class ElfDirectory implements IElfDirectory {
         }
         return total;
     }
+
+    public static directorySizesOverThreshold(
+        elfDirectory: ElfDirectory,
+        threshold: number
+    ): Array<number> {
+        let directorySizes: Array<number> = [];
+        for (let i = 0; i < elfDirectory.children.length; i++) {
+            if (elfDirectory.children[i] instanceof ElfFile) continue;
+            const directory = elfDirectory.children[i] as ElfDirectory;
+            const directorySize = ElfDirectory.getSize(directory);
+            if (directorySize > threshold) directorySizes.push(directorySize);
+            directorySizes = directorySizes.concat(
+                ElfDirectory.directorySizesOverThreshold(directory, threshold)
+            );
+        }
+        return directorySizes;
+    }
 }
