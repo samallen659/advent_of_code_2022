@@ -85,4 +85,55 @@ function partOne(input) {
     }
     console.log(tailVisitedPositions.size);
 }
+function partTwo(input) {
+    const moves = input.split("\n").filter(Boolean);
+    const headPosition = { x: 0, y: 0 };
+    const tailOne = { x: 0, y: 0 };
+    const tailTwo = { x: 0, y: 0 };
+    const tailThree = { x: 0, y: 0 };
+    const tailFour = { x: 0, y: 0 };
+    const tailFive = { x: 0, y: 0 };
+    const tailSix = { x: 0, y: 0 };
+    const tailSeven = { x: 0, y: 0 };
+    const tailEight = { x: 0, y: 0 };
+    const tailNine = { x: 0, y: 0 };
+    const tailVisitedPositions = new Set();
+    tailVisitedPositions.add(`${tailNine.x},${tailNine.y}`);
+    for (let i = 0; i < moves.length; i++) {
+        const [direction, amount] = moves[i].split(" ");
+        for (let i = 0; i < Number(amount); i++) {
+            moveHead(direction, headPosition);
+            if (!isTailWithinOneOfHead(headPosition, tailOne)) {
+                moveTail(headPosition, tailOne);
+            }
+            if (!isTailWithinOneOfHead(tailOne, tailTwo)) {
+                moveTail(tailOne, tailTwo);
+            }
+            if (!isTailWithinOneOfHead(tailTwo, tailThree)) {
+                moveTail(tailTwo, tailThree);
+            }
+            if (!isTailWithinOneOfHead(tailThree, tailFour)) {
+                moveTail(tailThree, tailFour);
+            }
+            if (!isTailWithinOneOfHead(tailFour, tailFive)) {
+                moveTail(tailFour, tailFive);
+            }
+            if (!isTailWithinOneOfHead(tailFive, tailSix)) {
+                moveTail(tailFive, tailSix);
+            }
+            if (!isTailWithinOneOfHead(tailSix, tailSeven)) {
+                moveTail(tailSix, tailSeven);
+            }
+            if (!isTailWithinOneOfHead(tailSeven, tailEight)) {
+                moveTail(tailSeven, tailEight);
+            }
+            if (!isTailWithinOneOfHead(tailEight, tailNine)) {
+                moveTail(tailEight, tailNine);
+                tailVisitedPositions.add(`${tailNine.x},${tailNine.y}`);
+            }
+        }
+    }
+    console.log(tailVisitedPositions.size);
+}
 partOne(input);
+partTwo(input);

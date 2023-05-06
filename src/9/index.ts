@@ -87,5 +87,56 @@ function partOne(input: string): void {
     }
     console.log(tailVisitedPositions.size);
 }
+function partTwo(input: string): void {
+    const moves = input.split("\n").filter(Boolean);
+    const headPosition: Position = { x: 0, y: 0 };
+    const tailOne: Position = { x: 0, y: 0 };
+    const tailTwo: Position = { x: 0, y: 0 };
+    const tailThree: Position = { x: 0, y: 0 };
+    const tailFour: Position = { x: 0, y: 0 };
+    const tailFive: Position = { x: 0, y: 0 };
+    const tailSix: Position = { x: 0, y: 0 };
+    const tailSeven: Position = { x: 0, y: 0 };
+    const tailEight: Position = { x: 0, y: 0 };
+    const tailNine: Position = { x: 0, y: 0 };
+    const tailVisitedPositions = new Set<string>();
+    tailVisitedPositions.add(`${tailNine.x},${tailNine.y}`);
+    for (let i = 0; i < moves.length; i++) {
+        const [direction, amount] = moves[i].split(" ");
+        for (let i = 0; i < Number(amount); i++) {
+            moveHead(direction, headPosition);
+            if (!isTailWithinOneOfHead(headPosition, tailOne)) {
+                moveTail(headPosition, tailOne);
+            }
+            if (!isTailWithinOneOfHead(tailOne, tailTwo)) {
+                moveTail(tailOne, tailTwo);
+            }
+            if (!isTailWithinOneOfHead(tailTwo, tailThree)) {
+                moveTail(tailTwo, tailThree);
+            }
+            if (!isTailWithinOneOfHead(tailThree, tailFour)) {
+                moveTail(tailThree, tailFour);
+            }
+            if (!isTailWithinOneOfHead(tailFour, tailFive)) {
+                moveTail(tailFour, tailFive);
+            }
+            if (!isTailWithinOneOfHead(tailFive, tailSix)) {
+                moveTail(tailFive, tailSix);
+            }
+            if (!isTailWithinOneOfHead(tailSix, tailSeven)) {
+                moveTail(tailSix, tailSeven);
+            }
+            if (!isTailWithinOneOfHead(tailSeven, tailEight)) {
+                moveTail(tailSeven, tailEight);
+            }
+            if (!isTailWithinOneOfHead(tailEight, tailNine)) {
+                moveTail(tailEight, tailNine);
+                tailVisitedPositions.add(`${tailNine.x},${tailNine.y}`);
+            }
+        }
+    }
+    console.log(tailVisitedPositions.size);
+}
 
 partOne(input);
+partTwo(input);
