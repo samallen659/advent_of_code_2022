@@ -57,11 +57,21 @@ function testItem(item: number, divisor: number, trueMonkeyId: number, falseMonk
     return falseMonkeyId;
 }
 
+function calculateBigMod(monkeys: Monkey[]): number {
+    let bigMod = 1;
+    monkeys.forEach((monkey) => {
+        bigMod *= monkey.testDivisor;
+    });
+    return bigMod;
+}
+
 function playRounds(monkeys: Monkey[]): void {
+    const bigMod = calculateBigMod(monkeys);
     for (let i = 0; i < monkeys.length; i++) {
         let monkeyItemCount = monkeys[i].items.length;
         for (let j = 0; j < monkeyItemCount; j++) {
-            const item = monkeys[i].evaluateItem();
+            let item = monkeys[i].evaluateItem();
+            item = item % bigMod;
             const throwToMonkeyId = testItem(
                 item,
                 monkeys[i].testDivisor,
@@ -91,5 +101,15 @@ function partOne(input: string): void {
     const monkeyBusiness = calculateMonkeyBusiness(monkeys);
     console.log(monkeyBusiness);
 }
+function partTwo(input: string): void {
+    const monkeyNotes = input.split("\n\n");
+    const monkeys = monkeyFactory(monkeyNotes);
+    for (let i = 0; i < 10000; i++) {
+        playRounds(monkeys);
+    }
+    const monkeyBusiness = calculateMonkeyBusiness(monkeys);
+    console.log(monkeyBusiness);
+}
 
 partOne(input);
+partTwo(input);

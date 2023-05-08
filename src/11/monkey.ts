@@ -33,7 +33,7 @@ class Monkey implements IMonkey {
         let item = this.items.shift();
         if (item) {
             item = this.runOperation(item);
-            return Math.floor(item / 3);
+            return item;
         }
         return -1;
     }
