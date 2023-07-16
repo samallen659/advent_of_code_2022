@@ -1,9 +1,11 @@
-package main
+package day1
 
 import (
 	"fmt"
 )
 
-func main() {
+var A = "day1"
+
+func Main() {
 	fmt.Println("Hello")
 }
