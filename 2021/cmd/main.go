@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"github.com/samallen659/advent_of_code/2021/pkg/days"
+	"github.com/samallen659/advent_of_code/2021/pkg/days/day1"
 )
 
 func main() {
-	fmt.Println(day1.A)
-	day1.Main()
+	day1.Day1()
 }
