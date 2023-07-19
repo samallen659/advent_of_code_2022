@@ -11,7 +11,7 @@ func Part1() int {
 	data := strings.Split(input, "\n")
 	horizontalPosition := 0
 	depth := 0
-	for i := 0; i < len(data)-1; i++ {
+	for i := 0; i < len(data); i++ {
 		horizontalChange, depthChange := calculateMove(data[i])
 		horizontalPosition += horizontalChange
 		depth += depthChange
@@ -25,7 +25,7 @@ func Part2() int {
 	horizontalPosition := 0
 	depth := 0
 	aim := 0
-	for i := 0; i < len(data)-1; i++ {
+	for i := 0; i < len(data); i++ {
 		moveData := strings.Split(data[i], " ")
 		moveDirection := moveData[0]
 		moveAmount, _ := strconv.Atoi(moveData[1])
