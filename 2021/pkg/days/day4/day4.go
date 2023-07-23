@@ -1,17 +1,19 @@
 package day4
 
 import (
-	"fmt"
-	"github.com/samallen659/advent_of_code/2021/pkg/utils"
+	// "fmt"
 	"strconv"
 	"strings"
+
+	"github.com/samallen659/advent_of_code/2021/pkg/utils"
 )
 
+var input = utils.ReadInput("/inputs/day4/input1.txt")
+var data = strings.Split(input, "\n\n")
+var moves = strings.Split(data[0], ",")
+var boardData = data[1:]
+
 func Part1() int {
-	input := utils.ReadInput("/inputs/day4/input1.txt")
-	data := strings.Split(input, "\n\n")
-	moves := strings.Split(data[0], ",")
-	boardData := data[1:]
 	var boards []board
 	for _, bd := range boardData {
 		boards = append(boards, createBoard(bd))
@@ -20,7 +22,6 @@ func Part1() int {
 	var finalMove int
 turn:
 	for _, move := range moves {
-		fmt.Printf("Move: %s\n", move)
 		for _, b := range boards {
 			moveNum, _ := strconv.Atoi(move)
 			b.MarkNumber(moveNum)
@@ -34,9 +35,39 @@ turn:
 	return finalMove * sumUnmakedNumberes(winner)
 }
 
+func Part2() int {
+	var boards []board
+	for _, bd := range boardData {
+		boards = append(boards, createBoard(bd))
+	}
+	boardMap := make(map[int]board)
+	for i, b := range boards {
+		boardMap[i] = b
+	}
+	var loser board
+	var finalMove int
+turn:
+	for _, move := range moves {
+		moveNum, _ := strconv.Atoi(move)
+		for k, v := range boardMap {
+			v.MarkNumber(moveNum)
+			if v.CheckWin() {
+				loser = v
+				finalMove = moveNum
+				delete(boardMap, k)
+				if len(boardMap) == 0 {
+					break turn
+				}
+			}
+		}
+	}
+	return finalMove * sumUnmakedNumberes(loser)
+
+}
+
 func sumUnmakedNumberes(b board) int {
 	sum := 0
-	for key, _ := range b.left {
+	for key := range b.left {
 		sum += key
 	}
 	return sum
@@ -65,6 +96,7 @@ func createBoard(data string) board {
 type board struct {
 	tiles [5][5]int
 	left  map[int]bool
+	won   bool
 }
 
 func (b board) MarkNumber(num int) {
