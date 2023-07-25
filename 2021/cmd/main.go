@@ -9,6 +9,7 @@ import (
 	"github.com/samallen659/advent_of_code/2021/pkg/days/day3"
 	"github.com/samallen659/advent_of_code/2021/pkg/days/day4"
 	"github.com/samallen659/advent_of_code/2021/pkg/days/day5"
+	"github.com/samallen659/advent_of_code/2021/pkg/days/day6"
 )
 
 func main() {
@@ -29,5 +30,7 @@ func main() {
 	case "5":
 		fmt.Printf("%d\n", day5.Part1())
 		fmt.Printf("%d\n", day5.Part2())
+	case "6":
+		day6.Part1()
 	}
 }
