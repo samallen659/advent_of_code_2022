@@ -30,6 +30,37 @@ func Part1() int {
 	return fuelTotal
 }
 
+func Part2() int {
+	var crabPosition []int
+	posTotal := 0
+	for _, posStr := range data {
+		posInt, _ := strconv.Atoi(posStr)
+		posTotal += posInt
+		crabPosition = append(crabPosition, posInt)
+	}
+
+	sort.Ints(crabPosition)
+	minPos, maxPos := crabPosition[0], crabPosition[len(crabPosition)-1]
+
+	minFuelTotal := 2147483647
+	for i := minPos; i < maxPos+1; i++ {
+		fuelTotal := 0
+		for j := 0; j < len(crabPosition); j++ {
+			absDist := Abs(i - crabPosition[j])
+			fuelUsed := 0
+			for f := 0; f < absDist; f++ {
+				fuelUsed += f + 1
+			}
+			fuelTotal += fuelUsed
+		}
+		if fuelTotal < minFuelTotal {
+			minFuelTotal = fuelTotal
+		}
+	}
+
+	return minFuelTotal
+}
+
 func Abs(x int) int {
 	if x < 0 {
 		return -x
